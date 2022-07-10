@@ -24,7 +24,7 @@ class Status(models.Model):
         verbose_name_plural = 'Статусы'
 
 
-class Type(BaseModel):
+class Type(models.Model):
     type = models.CharField(max_length=35, choices=TYPES)
 
     def __str__(self):
@@ -39,13 +39,12 @@ class Type(BaseModel):
 class Issue(BaseModel):
     summary = models.CharField(max_length=50, null=False, blank=False, verbose_name="Краткое описание")
     description = models.TextField(max_length=3000, null=True, blank=True, verbose_name="Описание")
-    status = models.ForeignKey("webapp.Status", on_delete=models.PROTECT, related_name="status",
+    status = models.ForeignKey("webapp.Status", on_delete=models.PROTECT, related_name='statuses',
                                verbose_name='Статус')
-    type = models.ForeignKey("webapp.Status", on_delete=models.PROTECT, related_name="type",
-                             verbose_name='Тип')
+    type = models.ForeignKey("webapp.Type", on_delete=models.PROTECT, related_name='types', verbose_name='Тип')
 
     def __str__(self):
-        return f"{self.id}. {self.summary}: {self.description}"
+        return f"{self.summary}"
 
     class Meta:
         db_table = "issue"

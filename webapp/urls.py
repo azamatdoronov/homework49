@@ -1,13 +1,11 @@
 from django.urls import path
-from django.views.generic import RedirectView
 
-from webapp.views import IndexView, create_issue, IssueView, update_issue, delete_issue
+from webapp.views import IndexView, IssueView, CreateIssue, UpdateIssue, DeleteIssue
 
 urlpatterns = [
     path('', IndexView.as_view(), name="index"),
-    path('issue/', RedirectView.as_view(pattern_name="index")),
-    path('issue/add/', create_issue, name="create_issue"),
-    path('issue/<int:pk>/', IssueView.as_view(extra_context={"test": 5}), name="issue_view"),
-    path('issue/<int:pk>/update/', update_issue, name="update_issue"),
-    path('issue/<int:pk>/delete/', delete_issue, name="delete_issue"),
+    path('issue/<issue_pk>', IssueView.as_view(), name='IssueView'),
+    path('create/', CreateIssue.as_view(), name='CreateIssue'),
+    path('product/<int:pk>/update/', UpdateIssue.as_view(), name='UpdateIssue'),
+    path('product/<pk>/delete/', DeleteIssue.as_view(), name='DeleteIssue'),
 ]

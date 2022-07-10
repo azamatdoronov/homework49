@@ -1,42 +1,32 @@
 from django.shortcuts import render, redirect, get_object_or_404
 # Create your views here.
 from django.views import View
-from django.views.generic import TemplateView, RedirectView
+from django.views.generic import TemplateView
 
 from webapp.forms import IssueForm
 from webapp.models import Issue
 
 
-class IndexView(View):
-    def get(self, request, *args, **kwargs):
-        issue = Issue.objects.order_by("-updated_at")
-        context = {"issue": issue}
-        return render(request, "index.html", context)
-
-
-class MyRedirectView(RedirectView):
-    url = "/"
+class IndexView(TemplateView):
+    def get(self, request):
+        issues = Issue.objects.all()
+        return render(request, 'index.html', {'issues': issues})
 
 
 class IssueView(TemplateView):
-    template_name = "issue_view.html"
+    template_name = 'issue_view.html'
 
-    # extra_context = {"test": "test"}
-    # def get_template_names(self):
-    #     return "article_view.html"
-
-    def get_context_data(self, **kwargs):
-        pk = kwargs.get("pk")
-        issue = get_object_or_404(Issue, pk=pk)
-        kwargs["issue"] = issue
+    def get_context_data(self,  **kwargs):
+        kwargs['issue'] = get_object_or_404(Issue, pk=kwargs['issue_pk'])
         return super().get_context_data(**kwargs)
 
 
-def create_issue(request):
-    if request.method == "GET":
+class CreateIssue(View):
+    def get(self, request, *args, **kwargs):
         form = IssueForm()
-        return render(request, "create.html", {"form": form})
-    else:
+        return render(request, 'create.html', {'form': form})
+
+    def post(self, request, *args, **kwargs):
         form = IssueForm(data=request.POST)
         if form.is_valid():
             summary = form.cleaned_data.get("summary")
@@ -44,21 +34,25 @@ def create_issue(request):
             status = form.cleaned_data.get("status")
             type = form.cleaned_data.get("type")
             new_issue = Issue.objects.create(summary=summary, description=description, status=status, type=type)
-            return redirect("issue_view", pk=new_issue.pk)
+            return redirect("IssueView", pk=new_issue.pk)
         return render(request, "create.html", {"form": form})
 
 
-def update_issue(request, pk):
-    issue = get_object_or_404(Issue, pk=pk)
-    if request.method == "GET":
+class UpdateIssue(View):
+    def get(self, request, *args, **kwargs):
+        pk = kwargs['pk']
+        issue = get_object_or_404(Issue, pk=pk)
         form = IssueForm(initial={
             "summary": issue.summary,
             "description": issue.description,
             "status": issue.status,
             "type": issue.type,
         })
-        return render(request, "update.html", {"form": form})
-    else:
+        return render(request, 'update.html', {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        pk = kwargs['pk']
+        issue = get_object_or_404(Issue, pk=pk)
         form = IssueForm(data=request.POST)
         if form.is_valid():
             issue.summary = form.cleaned_data.get("summary")
@@ -66,15 +60,19 @@ def update_issue(request, pk):
             issue.status = form.cleaned_data.get("status")
             issue.type = form.cleaned_data.get("type")
             issue.save()
-            return redirect("issue_view", pk=issue.pk)
-        return render(request, "update.html", {"form": form})
+            return redirect('IndexView')
+        return render(request, 'update.html', {"form": form})
 
 
-def delete_issue(request, pk):
-    issue = get_object_or_404(Issue, pk=pk)
-    if request.method == "GET":
-        pass
-    #     return render(request, "delete.html", {"article": article})
-    else:
-        issue.delete()
-        return redirect("index")
+class DeleteIssue(View):
+    def get(self, request, *args, **kwargs):
+        pk = kwargs['pk']
+        issue = get_object_or_404(Issue, pk=pk)
+        return render(request, 'delete.html', {'issue': issue})
+
+    def post(self, request, *args, **kwargs):
+        pk = kwargs['pk']
+        issue = get_object_or_404(Issue, pk=pk)
+        if request.POST.get('Yes') == 'Да':
+            issue.delete()
+        return redirect('IndexView')
