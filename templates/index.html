@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+{% block nav %}
+    <li class="nav-item">
+        <a class="nav-link" href="{% url "create_issue" %}">Создание задачи</a>
+    </li>
+{% endblock %}
+{% block content %}
+    <h1>Задачи</h1>
+    <div class="row">
+        {% for issue in issues %}
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ issue.summary }}</h5>
+                        <a href="{% url "issue_view" issue.pk %}" class="card-link">Подробнее</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

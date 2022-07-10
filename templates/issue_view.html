@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block nav %}
+    <li class="nav-item">
+        <a class="nav-link" href="{% url "create_issue" %}">Создание задачи</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url "update_issue" article.pk %}">Редактировать</a>
+    </li>
+    <li class="nav-item">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#issueDeleteModal">
+            Удалить
+        </button>
+    </li>
+{% endblock %}
+
+{% block content %}
+    {{ test }}
+    <p>
+        {{ issue.summary }}
+    </p>
+    <p>
+        {{ issue.description }}
+    </p>
+    <p>
+        {{ issue.status }}
+    </p>
+    <p>
+        {{ issue.type }}
+    </p>
+    <a href="{% url "index" %}">На главную</a>
+
+    <div class="modal fade" id="issueDeleteModal" tabindex="-1" aria-labelledby="issueModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="issueDeleteModal">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Вы уверены, что хотите удалить задачу {{ issue.summary }}?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <form action="{% url "delete_issue" issue.pk %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit">Да</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
