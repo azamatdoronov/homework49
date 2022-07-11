@@ -2,15 +2,15 @@
 {% load static %}
 {% block nav %}
     <li class="nav-item">
-        <a class="nav-link" href="{% url "CreateIssue" %}">Создание задачи</a>
+        <a class="nav-link" href="{% url "CreateIssue" %}">Создать задачу</a>
     </li>
 {% endblock %}
 {% block content %}
-    <h1>Задачи</h1>
+    <h1>Задачи:</h1>
     <div class="row">
         {% for issue in issues %}
             <div class="col-12 col-md-6 col-lg-4">
-                <div class="card bg-light mb-3">
+                <div class="card border-primary bg-light mb-3">
                     <div class="card-body">
                         <h5 class="card-title">{{ issue.summary }}</h5>
                         <a href="{% url "IssueView" issue.pk %}" class="card-link">Подробнее</a>

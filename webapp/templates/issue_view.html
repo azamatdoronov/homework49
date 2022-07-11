@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block nav %}
     <li class="nav-item">
-{#        <a class="nav-link" href="{% url "CreateIssue" %}">Создание задачи</a>#}
+        <a class="nav-link" href="{% url "CreateIssue" %}">Создать задачу</a>
     </li>
     <li class="nav-item">
         <a class="nav-link" href="{% url "UpdateIssue" issue.pk %}">Редактировать</a>
@@ -15,19 +15,21 @@
 
 {% block content %}
     {{ test }}
+    <h1>Подробная информация <br>
+        о задаче:</h1>
     <p>
-    <p><b>Summary:</b></p>
+    <p><b>Заголовок:</b></p>
         {{ issue.summary }}
     </p>
     <p>
-    <p><b>Description:</b></p>
+    <p><b>Описание:</b></p>
         {{ issue.description }}
     </p>
     <p>
-    <p><b>Status:</b></p>
+    <p><b>Статус:</b></p>
         {{ issue.status }}
     </p>
-    <p><b>Status:</b></p>
+    <p><b>Тип:</b></p>
     <p>
         {{ issue.type }}
     </p>
