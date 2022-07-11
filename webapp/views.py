@@ -17,7 +17,7 @@ class IssueView(TemplateView):
     template_name = 'issue_view.html'
 
     def get_context_data(self,  **kwargs):
-        kwargs['issue'] = get_object_or_404(Issue, pk=kwargs['issue_pk'])
+        kwargs['issue'] = get_object_or_404(Issue, pk=kwargs['pk'])
         return super().get_context_data(**kwargs)
 
 
@@ -60,7 +60,7 @@ class UpdateIssue(View):
             issue.status = form.cleaned_data.get("status")
             issue.type = form.cleaned_data.get("type")
             issue.save()
-            return redirect('IndexView')
+            return redirect('index')
         return render(request, 'update.html', {"form": form})
 
 
@@ -73,6 +73,5 @@ class DeleteIssue(View):
     def post(self, request, *args, **kwargs):
         pk = kwargs['pk']
         issue = get_object_or_404(Issue, pk=pk)
-        if request.POST.get('Yes') == 'Да':
-            issue.delete()
-        return redirect('IndexView')
+        issue.delete()
+        return redirect('index')
