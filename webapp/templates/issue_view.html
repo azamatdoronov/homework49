@@ -18,18 +18,18 @@
     <h1>Подробная информация <br>
         о задаче:</h1>
     <p>
-    <p><b>Заголовок:</b></p>
+    <b>Заголовок:</b>
     {{ issue.summary }}
     </p>
     <p>
-    <p><b>Описание:</b></p>
+    <b>Описание:</b>
     {{ issue.description }}
     </p>
     <p>
-    <p><b>Статус:</b></p>
+    <b>Статус:</b>
     {{ issue.status }}
     </p>
-    <p><b>Тип:</b></p>
+    <b>Тип:</b>
     <p>{% for type in issue.type.all %}{{ type.type }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
     <a href="{% url "index" %}">На главную</a>
     <div class="modal fade" id="issueDeleteModal" tabindex="-1" aria-labelledby="issueModalLabel"
