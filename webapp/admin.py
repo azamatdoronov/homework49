@@ -4,7 +4,7 @@ from webapp.models import Issue
 
 
 class IssueAdmin(admin.ModelAdmin):
-    list_display = ['id', 'summary', 'description', 'status', 'type', 'created_at']
+    list_display = ['id', 'summary', 'description', 'status', 'created_at']
     list_display_links = ['summary']
     list_filter = ['summary']
     search_fields = ['id', 'summary']
