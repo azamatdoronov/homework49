@@ -28,5 +28,5 @@ def check_status(status):
 
 
 def check_count(list):
-    if len(list) > 5:
-        raise ValidationError(f'"type" cannot be more than 3')
+    if len(list) == 3:
+        raise ValidationError(f'"type" cannot be equal to 3')
