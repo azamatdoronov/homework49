@@ -29,11 +29,8 @@ class CreateIssue(View):
     def post(self, request, *args, **kwargs):
         form = IssueForm(data=request.POST)
         if form.is_valid():
-            summary = form.cleaned_data.get("summary")
-            description = form.cleaned_data.get("description")
-            status = form.cleaned_data.get("status")
             type = form.cleaned_data.pop("type")
-            new_issue = Issue.objects.create(summary=summary, description=description, status=status)
+            new_issue = form.save()
             new_issue.type.set(type)
             return redirect("IssueView", pk=new_issue.pk)
         return render(request, "create.html", {"form": form})
@@ -54,13 +51,11 @@ class UpdateIssue(View):
     def post(self, request, *args, **kwargs):
         pk = kwargs['pk']
         issue = get_object_or_404(Issue, pk=pk)
-        form = IssueForm(data=request.POST)
+        form = IssueForm(data=request.POST, instance=issue)
         if form.is_valid():
-            issue.summary = form.cleaned_data.get("summary")
-            issue.description = form.cleaned_data.get("description")
-            issue.status = form.cleaned_data.get("status")
-            issue.type.set(form.cleaned_data.pop("type"))
-            issue.save()
+            type = form.cleaned_data.pop('type')
+            issue = form.save()
+            issue.type.set(type)
             return redirect('index')
         return render(request, 'update.html', {"form": form})
 
