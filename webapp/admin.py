@@ -1,10 +1,10 @@
 from django.contrib import admin
 
-from webapp.models import Issue
+from webapp.models import Issue, Type, Status
 
 
 class IssueAdmin(admin.ModelAdmin):
-    list_display = ['id', 'summary', 'description', 'status', 'type', 'created_at']
+    list_display = ['id', 'summary', 'description', 'status', 'created_at']
     list_display_links = ['summary']
     list_filter = ['summary']
     search_fields = ['id', 'summary']
@@ -13,3 +13,5 @@ class IssueAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Issue, IssueAdmin)
+admin.site.register(Type)
+admin.site.register(Status)

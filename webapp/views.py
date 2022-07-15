@@ -32,8 +32,9 @@ class CreateIssue(View):
             summary = form.cleaned_data.get("summary")
             description = form.cleaned_data.get("description")
             status = form.cleaned_data.get("status")
-            type = form.cleaned_data.get("type")
-            new_issue = Issue.objects.create(summary=summary, description=description, status=status, type=type)
+            type = form.cleaned_data.pop("type")
+            new_issue = Issue.objects.create(summary=summary, description=description, status=status)
+            new_issue.type.set(type)
             return redirect("IssueView", pk=new_issue.pk)
         return render(request, "create.html", {"form": form})
 
@@ -46,7 +47,7 @@ class UpdateIssue(View):
             "summary": issue.summary,
             "description": issue.description,
             "status": issue.status,
-            "type": issue.type,
+            "type": issue.type.all()
         })
         return render(request, 'update.html', {'form': form})
 
@@ -58,7 +59,7 @@ class UpdateIssue(View):
             issue.summary = form.cleaned_data.get("summary")
             issue.description = form.cleaned_data.get("description")
             issue.status = form.cleaned_data.get("status")
-            issue.type = form.cleaned_data.get("type")
+            issue.type.set(form.cleaned_data.pop("type"))
             issue.save()
             return redirect('index')
         return render(request, 'update.html', {"form": form})
