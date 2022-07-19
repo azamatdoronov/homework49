@@ -26,6 +26,6 @@ task3:
 	- b3=Issue.objects.filter(b1 | b2)
 	- s=Q(status__status='Done')
 	- s3=Issue.objects.filter(~s)
-	- b3 & g
+	- b3 & s3
 
 	
