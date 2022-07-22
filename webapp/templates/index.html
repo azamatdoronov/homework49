@@ -6,6 +6,8 @@
     </li>
 {% endblock %}
 {% block content %}
+    <br>
+    {% include "partial/search.html" %}
     <h1>Задачи:</h1>
     <div class="row">
         {% for issue in issues %}
@@ -18,5 +20,10 @@
                 </div>
             </div>
         {% endfor %}
+    <div class="d-flex justify-content-center">
+        {% if is_paginated %}
+            {% include "partial/pagination.html" %}
+        {% endif %}
+    </div>
     </div>
 {% endblock %}
