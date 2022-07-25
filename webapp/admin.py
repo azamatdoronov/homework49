@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from webapp.models import Issue, Type, Status
+from webapp.models import Issue, Type, Status, Project
 
 
 class IssueAdmin(admin.ModelAdmin):
@@ -15,3 +15,4 @@ class IssueAdmin(admin.ModelAdmin):
 admin.site.register(Issue, IssueAdmin)
 admin.site.register(Type)
 admin.site.register(Status)
+admin.site.register(Project)
