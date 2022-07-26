@@ -51,7 +51,8 @@ class IssueView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # context['issue'] = self.object.issue.order_by("-updated_at")
+        context['project'] = self.object.project.p_name
+        print(context)
         return context
 
 
