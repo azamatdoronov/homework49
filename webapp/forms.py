@@ -8,7 +8,7 @@ from webapp.models import Issue, Project
 class IssueForm(forms.ModelForm):
     class Meta:
         model = Issue
-        fields = ["summary", "description", "type", "status"]
+        fields = ["summary", "description", "type", "status", "project"]
         widgets = {
             "type": widgets.CheckboxSelectMultiple
         }
@@ -28,10 +28,12 @@ class ProjectForm(forms.ModelForm):
         model = Project
         fields = ['p_name', 'p_description', 'start_date', 'expiration_date']
         widgets = {
-            "p_description": widgets.Textarea(attrs={"placeholder": "Введите описание"})
+            "p_description": widgets.Textarea(attrs={"placeholder": "Введите описание"}),
+            "start_date": widgets.DateInput(attrs={'placeholder': "Формат: год-месяц-день"}),
+            "expiration_date": widgets.DateInput(attrs={'placeholder': "Формат: год-месяц-день"})
         }
 
-    def clean(self):
-        if self.cleaned_data.get("p_name") == self.cleaned_data.get("p_description"):
-            raise ValidationError("Название и описание проекта не могут совпадать")
-        return super().clean()
+        def clean(self):
+            if self.cleaned_data.get("p_name") == self.cleaned_data.get("p_description"):
+                raise ValidationError("Название и описание проекта не могут совпадать")
+            return super().clean()

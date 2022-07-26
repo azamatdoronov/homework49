@@ -57,7 +57,8 @@ class Issue(BaseModel):
 
 class Project(models.Model):
     start_date = models.DateField(verbose_name="Дата начала")
-    expiration_date = models.DateField(null=True, blank=True, verbose_name="Дата окончания")
+    expiration_date = models.DateField(null=True, blank=True,
+                                       verbose_name="Дата окончания")
     p_name = models.CharField(max_length=35, verbose_name="Название проекта")
     p_description = models.TextField(max_length=3000, verbose_name="Описание проекта")
 
