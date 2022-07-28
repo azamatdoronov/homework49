@@ -4,8 +4,9 @@
 {% block content %}
 <form action="" method="post">
 {% csrf_token %}
-    <h2>Вы уверены, что хотите удалить статью {{ issue.summary }}?</h2>
+    <h2>Вы уверены, что хотите удалить задачу {{ issue.summary }}?</h2>
     <button type="submit">Да</button>
 </form>
-    <a href="{% url "issue_view" issue.pk %}">Нет</a>
+    <a href="{% url "IssueView" issue.pk %}">Нет</a>
 {% endblock %}
+

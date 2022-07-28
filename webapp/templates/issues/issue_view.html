@@ -7,9 +7,9 @@
         <a class="nav-link" href="{% url "UpdateIssue" issue.pk %}">Редактировать</a>
     </li>
     <li class="nav-item">
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#issueDeleteModal">
-            Удалить
-        </button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#issueDeleteModal">
+                    Удалить
+                </button>
     </li>
 {% endblock %}
 
@@ -33,10 +33,10 @@
         {% for type in issue.type.all %}{{ type.type }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
     <b>Проект:</b>
     <p>
-            <p>{{ issue.project.p_name }}</p>
+    <p>{{ issue.project.p_name }}</p>
     </p>
     <a href="{% url "index" %}">На главную</a>
-    <div class="modal fade" id="issueDeleteModal" tabindex="-1" aria-labelledby="issueModalLabel"
+     <div class="modal fade" id="issueDeleteModal" tabindex="-1" aria-labelledby="issueModalLabel"
          aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">

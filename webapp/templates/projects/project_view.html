@@ -7,12 +7,10 @@
         <a class="nav-link" href="{% url "UpdateProject" project.pk %}">Редактировать проект</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="{% url "CreateIssue" %}">Создать задачу</a>
+        <a class="nav-link" href="{% url "DeleteProject" project.pk %}">Удалить проект</a>
     </li>
     <li class="nav-item">
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#projectDeleteModal">
-            Удалить
-        </button>
+        <a class="nav-link" href="{% url "CreateIssue" %}">Создать задачу</a>
     </li>
 {% endblock %}
 
@@ -38,11 +36,12 @@
     </p>
     <p><b>Задачи:</b>
         {% for issue in project.projects.all %}
-            <p>{{ issue.summary }}</p>
+             <p class="mb-1"><a href="{% url 'IssueView' issue.pk %}">{{ issue }}</a></p>
         {% empty %}
             <p>Задач нет</p>
         {% endfor %}
-
+    <br>
+    <br>
     <a href="{% url "index" %}">На главную</a>
     <div class="modal fade" id="projectDeleteModal" tabindex="-1" aria-labelledby="projectModalLabel"
          aria-hidden="true">
