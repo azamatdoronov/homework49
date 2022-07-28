@@ -13,7 +13,7 @@ class IndexView(ListView):
     template_name = "projects/index.html"
     context_object_name = "projects"
     ordering = "-start_date"
-    paginate_by = 3
+    paginate_by = 5
 
 
 class ProjectView(DetailView):
