@@ -5,6 +5,12 @@ from django.forms import widgets
 from webapp.models import Issue, Project
 
 
+class UserIssueForm(forms.ModelForm):
+    class Meta:
+        model = Issue
+        fields = ["summary"]
+
+
 class IssueForm(forms.ModelForm):
     class Meta:
         model = Issue
