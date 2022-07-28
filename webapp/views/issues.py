@@ -1,13 +1,12 @@
 from django.db.models import Q
-from django.shortcuts import redirect, get_object_or_404, render
-from django.urls import reverse
+from django.shortcuts import redirect
+from django.urls import reverse_lazy, reverse
 # Create your views here.
 from django.utils.http import urlencode
-from django.views import View
-from django.views.generic import FormView, ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from webapp.forms import IssueForm, SearchForm
-from webapp.models import Issue, Project
+from webapp.models import Issue
 
 
 class IndexIssueView(ListView):
@@ -52,7 +51,6 @@ class IssueView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['project'] = self.object.project.p_name
-        print(context)
         return context
 
 
@@ -67,39 +65,18 @@ class CreateIssue(CreateView):
         return redirect("IssueView", pk=issue.pk)
 
 
-class UpdateIssue(FormView):
+class UpdateIssue(UpdateView):
+    model = Issue
     form_class = IssueForm
-    template_name = "issues/update.html"
-
-    def dispatch(self, request, *args, **kwargs):
-        self.issue = self.get_object()
-        return super().dispatch(request, *args, **kwargs)
+    context_object_name = 'issue'
+    template_name = 'issues/update.html'
 
     def get_success_url(self):
-        return reverse("IssueView", kwargs={"pk": self.issue.pk})
-
-    def get_form_kwargs(self):
-        form_kwargs = super().get_form_kwargs()
-        form_kwargs['instance'] = self.issue
-        return form_kwargs
-
-    def form_valid(self, form):
-        self.issue = form.save()
-        return super().form_valid(form)
-
-    def get_object(self):
-        return get_object_or_404(Issue, pk=self.kwargs.get("pk"))
+        return reverse('IssueView', kwargs={'issue_pk': self.object.pk})
 
 
-class DeleteIssue(View):
-    def get(self, request, *args, **kwargs):
-        pk = kwargs['pk']
-        issue = get_object_or_404(Issue, pk=pk)
-        return render(request, 'issues/delete.html', {'issue': issue})
-
-    def post(self, request, *args, **kwargs):
-        pk = kwargs['pk']
-        issue = get_object_or_404(Issue, pk=pk)
-        issue.delete()
-        return redirect('index')
-
+class DeleteIssue(DeleteView):
+    model = Issue
+    template_name = 'issues/delete.html'
+    context_object_name = 'issue'
+    success_url = reverse_lazy('IndexIssueView')
