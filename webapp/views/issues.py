@@ -72,7 +72,7 @@ class UpdateIssue(UpdateView):
     template_name = 'issues/update.html'
 
     def get_success_url(self):
-        return reverse('IssueView', kwargs={'issue_pk': self.object.pk})
+        return reverse('IssueView', kwargs={'pk': self.object.pk})
 
 
 class DeleteIssue(DeleteView):
