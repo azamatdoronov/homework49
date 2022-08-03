@@ -14,7 +14,7 @@ class UserIssueForm(forms.ModelForm):
 class IssueForm(forms.ModelForm):
     class Meta:
         model = Issue
-        fields = ["summary", "description", "type", "status", "project"]
+        fields = ["summary", "description", "type", "status"]
         widgets = {
             "type": widgets.CheckboxSelectMultiple
         }

@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 # Create your views here.
 from django.urls import reverse_lazy
@@ -26,25 +27,29 @@ class ProjectView(DetailView):
         return context
 
 
-class CreateProject(CreateView):
+class CreateProject(LoginRequiredMixin, CreateView):
     form_class = ProjectForm
     template_name = "projects/create.html"
 
     def form_valid(self, form):
         project = form.save(commit=False)
         project.save()
-        form.save_m2m()
-        return redirect("ProjectView", pk=project.pk)
+        return redirect("webapp:ProjectView", pk=project.pk)
+
+    # def dispatch(self, request, *args, **kwargs):
+    #     if request.user.is_authenticated:
+    #         return super().dispatch(request, *args, **kwargs)
+    #     return redirect("accounts:login")
 
 
-class UpdateProject(UpdateView):
+class UpdateProject(LoginRequiredMixin, UpdateView):
     model = Project
     template_name = 'projects/update.html'
     form_class = ProjectForm
     context_object_name = 'project'
 
 
-class DeleteProject(DeleteView):
+class DeleteProject(LoginRequiredMixin, DeleteView):
     model = Project
     template_name = "projects/delete.html"
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy("webapp:index")

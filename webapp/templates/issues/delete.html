@@ -7,6 +7,6 @@
     <h2>Вы уверены, что хотите удалить задачу {{ issue.summary }}?</h2>
     <button type="submit">Да</button>
 </form>
-    <a href="{% url "IssueView" issue.pk %}">Нет</a>
+    <a href="{% url "webapp:IssueView" issue.pk %}">Нет</a>
 {% endblock %}
 

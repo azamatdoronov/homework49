@@ -1,12 +1,13 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy, reverse
 # Create your views here.
 from django.utils.http import urlencode
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from webapp.forms import IssueForm, SearchForm
-from webapp.models import Issue
+from webapp.models import Issue, Project
 
 
 class IndexIssueView(ListView):
@@ -54,29 +55,31 @@ class IssueView(DetailView):
         return context
 
 
-class CreateIssue(CreateView):
+class CreateIssue(LoginRequiredMixin, CreateView):
     form_class = IssueForm
     template_name = "issues/create.html"
 
     def form_valid(self, form):
-        issue = form.save(commit=False)
-        issue.save()
-        form.save_m2m()
-        return redirect("IssueView", pk=issue.pk)
+        project = get_object_or_404(Project, pk=self.kwargs.get("pk"))
+        form.instance.project = project
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse("webapp:ProjectView", kwargs={"pk": self.object.project.pk})
 
 
-class UpdateIssue(UpdateView):
+class UpdateIssue(LoginRequiredMixin, UpdateView):
     model = Issue
     form_class = IssueForm
     context_object_name = 'issue'
     template_name = 'issues/update.html'
 
     def get_success_url(self):
-        return reverse('IssueView', kwargs={'pk': self.object.pk})
+        return reverse('webapp:IssueView', kwargs={'pk': self.object.pk})
 
 
-class DeleteIssue(DeleteView):
+class DeleteIssue(LoginRequiredMixin, DeleteView):
     model = Issue
     template_name = 'issues/delete.html'
     context_object_name = 'issue'
-    success_url = reverse_lazy('IndexIssueView')
+    success_url = reverse_lazy('webapp:IndexIssueView')
