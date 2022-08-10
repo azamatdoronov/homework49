@@ -14,7 +14,8 @@
             <a class="nav-link" href="{% url "webapp:CreateIssue" project.pk %}">Создать задачу</a>
         </li>
         <li class="nav-item">
-             <a class="nav-link" href="{% url "webapp:project_add_users" project.pk %}">Добавить или Удалить пользователя</a>
+            <a class="nav-link" href="{% url "webapp:project_add_users" project.pk %}">Добавить или Удалить
+                пользователя</a>
         </li>
     {% endif %}
 {% endblock %}
@@ -46,8 +47,20 @@
             <p>Задач нет</p>
         {% endfor %}
     <br>
+    <b>Пользователи:</b>
+    <br>
+    {% for user in project.users.all %}
+        <div class="col my-2">
+                    <p class="card-title">{{ user.username }} </p>
+        </div>
+    {% empty %}
+        <p>Пользователей нет</p>
+    {% endfor %}
     <br>
     <a href="{% url "webapp:index" %}">На главную</a>
+    <br>
+    <br>
+
     <div class="modal fade" id="projectDeleteModal" tabindex="-1" aria-labelledby="projectModalLabel"
          aria-hidden="true">
         <div class="modal-dialog">
@@ -69,13 +82,4 @@
             </div>
         </div>
     </div>
-        {% for user in project.users.all %}
-        <div class="col my-2">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title">{{ user.username }}  </h5>
-                </div>
-            </div>
-        </div>
-    {% endfor %}
 {% endblock %}
