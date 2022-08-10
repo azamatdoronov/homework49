@@ -1,11 +1,12 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
 from django.shortcuts import redirect
 # Create your views here.
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 from django.views.generic import ListView
 
-from webapp.forms import ProjectForm
+from webapp.forms import ProjectForm, AddUsersForm
 from webapp.models import Project
 
 
@@ -22,9 +23,21 @@ class ProjectView(DetailView):
     model = Project
 
     def get_context_data(self, **kwargs):
+        # context = super().get_context_data(**kwargs)
+        # context['projects'] = self.object.projects.order_by("-created_at")
+        # return context
+
+        pk = self.kwargs.get("pk")
+        users = User.objects.filter(projects__pk=pk)
         context = super().get_context_data(**kwargs)
-        context['projects'] = self.object.projects.order_by("-created_at")
+        context["users"] = users
         return context
+
+
+class AddUsers(UpdateView):
+    model = Project
+    form_class = AddUsersForm
+    template_name = 'add_users_view.html'
 
 
 class CreateProject(LoginRequiredMixin, CreateView):
