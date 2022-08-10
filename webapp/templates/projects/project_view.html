@@ -13,6 +13,9 @@
         <li class="nav-item">
             <a class="nav-link" href="{% url "webapp:CreateIssue" project.pk %}">Создать задачу</a>
         </li>
+        <li class="nav-item">
+             <a class="nav-link" href="{% url "webapp:project_add_users" project.pk %}">Добавить или Удалить пользователя</a>
+        </li>
     {% endif %}
 {% endblock %}
 
@@ -66,4 +69,13 @@
             </div>
         </div>
     </div>
+        {% for user in project.users.all %}
+        <div class="col my-2">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ user.username }}  </h5>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
 {% endblock %}
