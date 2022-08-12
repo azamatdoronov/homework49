@@ -62,7 +62,8 @@ class Project(models.Model):
                                        verbose_name="Дата окончания")
     p_name = models.CharField(max_length=35, verbose_name="Название проекта")
     p_description = models.TextField(max_length=3000, verbose_name="Описание проекта")
-    users = models.ManyToManyField(get_user_model(), null=True, blank=True, related_name="projects", verbose_name="Пользователи")
+    users = models.ManyToManyField(get_user_model(), related_name="users",
+                                   verbose_name="Пользователи")
 
     def __str__(self):
         return f"{self.id}. {self.p_name}"
