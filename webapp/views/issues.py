@@ -93,4 +93,8 @@ class DeleteIssue(PermissionRequiredMixin, DeleteView):
     template_name = 'issues/delete.html'
     context_object_name = 'issue'
     success_url = reverse_lazy('webapp:IndexIssueView')
-    permission_required = "webapp.delete_issue"
+    permission_required = "webapp.update_issue"
+
+    def has_permission(self):
+        return self.request.user.has_perm("webapp.update_project") or \
+               self.request.user.groups.filter(name__in=("Project Manager", "Team Lead")).exists()
