@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy, reverse
@@ -55,9 +55,10 @@ class IssueView(DetailView):
         return context
 
 
-class CreateIssue(LoginRequiredMixin, CreateView):
+class CreateIssue(PermissionRequiredMixin, CreateView):
     form_class = IssueForm
     template_name = "issues/create.html"
+    permission_required = "webapp.update_issue"
 
     def form_valid(self, form):
         project = get_object_or_404(Project, pk=self.kwargs.get("pk"))
@@ -67,19 +68,29 @@ class CreateIssue(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse("webapp:ProjectView", kwargs={"pk": self.object.project.pk})
 
+    def has_permission(self):
+        return self.request.user.has_perm("webapp.update_issue") or \
+               self.request.user.groups.filter(name__in=("Project Manager", "Team Lead", "Developer")).exists()
 
-class UpdateIssue(LoginRequiredMixin, UpdateView):
+
+class UpdateIssue(PermissionRequiredMixin, UpdateView):
     model = Issue
     form_class = IssueForm
     context_object_name = 'issue'
     template_name = 'issues/update.html'
+    permission_required = "webapp.update_issue"
 
     def get_success_url(self):
         return reverse('webapp:IssueView', kwargs={'pk': self.object.pk})
 
+    def has_permission(self):
+        return self.request.user.has_perm("webapp.update_issue") or \
+               self.request.user.groups.filter(name__in=("Project Manager", "Team Lead", "Developer")).exists()
 
-class DeleteIssue(LoginRequiredMixin, DeleteView):
+
+class DeleteIssue(PermissionRequiredMixin, DeleteView):
     model = Issue
     template_name = 'issues/delete.html'
     context_object_name = 'issue'
     success_url = reverse_lazy('webapp:IndexIssueView')
+    permission_required = "webapp.delete_issue"

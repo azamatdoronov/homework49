@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
 # Create your views here.
@@ -23,13 +23,10 @@ class ProjectView(DetailView):
     model = Project
 
     def get_context_data(self, **kwargs):
-        # context = super().get_context_data(**kwargs)
-        # context['projects'] = self.object.projects.order_by("-created_at")
-        # return context
-
         pk = self.kwargs.get("pk")
-        users = User.objects.filter(projects__pk=pk)
+        users = User.objects.filter(users__pk=pk)
         context = super().get_context_data(**kwargs)
+        context["projects"] = self.object.projects.order_by("-created_at")
         context["users"] = users
         return context
 
@@ -40,14 +37,19 @@ class AddUsers(UpdateView):
     template_name = 'add_users_view.html'
 
 
-class CreateProject(LoginRequiredMixin, CreateView):
+class CreateProject(PermissionRequiredMixin, CreateView):
     form_class = ProjectForm
     template_name = "projects/create.html"
+    permission_required = "webapp.update_project"
 
     def form_valid(self, form):
         project = form.save(commit=False)
         project.save()
         return redirect("webapp:ProjectView", pk=project.pk)
+
+    def has_permission(self):
+        return self.request.user.has_perm("webapp.update_project") or \
+               self.request.user.groups.filter(name__in=("Project Manager", "Team Lead")).exists()
 
     # def dispatch(self, request, *args, **kwargs):
     #     if request.user.is_authenticated:
@@ -55,14 +57,32 @@ class CreateProject(LoginRequiredMixin, CreateView):
     #     return redirect("accounts:login")
 
 
-class UpdateProject(LoginRequiredMixin, UpdateView):
+class UpdateProject(PermissionRequiredMixin, UpdateView):
     model = Project
     template_name = 'projects/update.html'
     form_class = ProjectForm
     context_object_name = 'project'
 
+    def has_permission(self):
+        return self.request.user.has_perm("webapp.update_project") or \
+               self.request.user.groups.filter(name__in=("Project Manager", "Team Lead")).exists()
 
-class DeleteProject(LoginRequiredMixin, DeleteView):
+
+class DeleteProject(PermissionRequiredMixin, DeleteView):
     model = Project
     template_name = "projects/delete.html"
     success_url = reverse_lazy("webapp:index")
+
+    def has_permission(self):
+        return self.request.user.has_perm("webapp.update_project") or \
+                   self.request.user.groups.filter(name__in=("Project Manager", "Team Lead")).exists()
+
+        # return self.request.user.is_superuser or \
+        #        self.request.user.groups.filter(name__in=("Модераторы",)).exists()
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(data=request.POST, instance=self.get_object())
+        if form.is_valid():
+            return self.delete(request, *args, **kwargs)
+        else:
+            return self.get(request, *args, **kwargs)
