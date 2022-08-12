@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block nav %}
     {% if request.user.is_authenticated %}
+    {% if perms.webapp.update_project and user in project.users.all %}
         <li class="nav-item">
             <a class="nav-link" href="{% url "webapp:CreateProject" %}">Создать проект</a>
         </li>
@@ -17,11 +18,10 @@
             <a class="nav-link" href="{% url "webapp:project_add_users" project.pk %}">Добавить или Удалить
                 пользователя</a>
         </li>
+        {% endif %}
     {% endif %}
 {% endblock %}
-
 {% block content %}
-
     <h1>Подробная информация <br>
         о проекте:</h1>
     <p>

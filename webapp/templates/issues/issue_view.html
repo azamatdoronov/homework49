@@ -1,14 +1,16 @@
 {% extends "base.html" %}
 {% block nav %}
     {% if request.user.is_authenticated %}
-        <li class="nav-item">
-            <a class="nav-link" href="{% url "webapp:UpdateIssue" issue.pk %}">Редактировать</a>
-        </li>
-        <li class="nav-item">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#issueDeleteModal">
-                Удалить
-            </button>
-        </li>
+        {% if perms.webapp.update_issue and user in issue.project.users.all %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url "webapp:UpdateIssue" issue.pk %}">Редактировать</a>
+            </li>
+            <li class="nav-item">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#issueDeleteModal">
+                    Удалить
+                </button>
+            </li>
+        {% endif %}
     {% endif %}
 {% endblock %}
 
@@ -33,7 +35,6 @@
     <b>Проект:</b>
     <p>
     <p>{{ issue.project.p_name }}</p>
-    </p>
     <a href="{% url "webapp:index" %}">На главную</a>
     <div class="modal fade" id="issueDeleteModal" tabindex="-1" aria-labelledby="issueModalLabel"
          aria-hidden="true">
