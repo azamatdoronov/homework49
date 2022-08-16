@@ -1,5 +1,7 @@
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth import get_user_model
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.models import User
+from django.core.paginator import Paginator
 from django.shortcuts import redirect
 # Create your views here.
 from django.urls import reverse_lazy
@@ -24,10 +26,10 @@ class ProjectView(DetailView):
 
     def get_context_data(self, **kwargs):
         pk = self.kwargs.get("pk")
-        users = User.objects.filter(users__pk=pk)
+        projects = User.objects.filter(projects__pk=pk)
         context = super().get_context_data(**kwargs)
         context["projects"] = self.object.projects.order_by("-created_at")
-        context["users"] = users
+        context["users"] = projects
         return context
 
 
@@ -35,6 +37,18 @@ class AddUsers(UpdateView):
     model = Project
     form_class = AddUsersForm
     template_name = 'add_users_view.html'
+
+
+class ViewUsers(ListView):
+    model = get_user_model()
+    template_name = 'projects/users_view.html'
+    context_object_name = "users"
+    paginate_by = 5
+    paginate_orphans = 0
+
+    def has_permission(self):
+        return self.request.user.has_perm("webapp.update_project") or \
+               self.request.user.groups.filter(name__in=("Project Manager", "Team Lead")).exists()
 
 
 class CreateProject(PermissionRequiredMixin, CreateView):
@@ -75,7 +89,7 @@ class DeleteProject(PermissionRequiredMixin, DeleteView):
 
     def has_permission(self):
         return self.request.user.has_perm("webapp.update_project") or \
-                   self.request.user.groups.filter(name__in=("Project Manager", "Team Lead")).exists()
+               self.request.user.groups.filter(name__in=("Project Manager", "Team Lead")).exists()
 
         # return self.request.user.is_superuser or \
         #        self.request.user.groups.filter(name__in=("Модераторы",)).exists()
