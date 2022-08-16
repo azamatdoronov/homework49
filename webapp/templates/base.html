@@ -25,7 +25,7 @@
                 {% endblock %}
                 {% if request.user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Здравствуйте, {{ user.username }}</a>
+                        <a class="nav-link" href="{% url "accounts:profile" request.user.pk %}">Здравствуйте, {{ user.username }}</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url "accounts:logout" %}">Выйти</a>

@@ -10,27 +10,12 @@
         <li class="nav-item">
             <a class="nav-link" href="{% url "webapp:IndexIssueView" %}">Посмотреть все задачи</a>
         </li>
-
+        <li class="nav-item">
+            <a class="nav-link" href="{% url "webapp:ViewUsers" %}">Посмотреть всех пользователей</a>
+        </li>
     {% endif %}
 {% endblock %}
 {% block content %}
     <br>
-    <h1>Проекты:</h1>
-    <div class="row">
-        {% for project in projects %}
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card border-primary bg-light mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ project.p_name }}</h5>
-                        <a href="{% url "webapp:ProjectView" project.pk %}" class="card-link">Подробнее</a>
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
-        <div class="d-flex justify-content-center">
-            {% if is_paginated %}
-                {% include "partial/pagination.html" %}
-            {% endif %}
-        </div>
-    </div>
+    {% include "partial/projects_list_partial.html" %}
 {% endblock %}
