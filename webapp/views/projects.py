@@ -16,7 +16,7 @@ class IndexView(ListView):
     template_name = "projects/index.html"
     context_object_name = "projects"
     ordering = "-start_date"
-    paginate_by = 5
+    paginate_by = 6
 
 
 class ProjectView(DetailView):
@@ -42,7 +42,7 @@ class ViewUsers(ListView):
     model = get_user_model()
     template_name = 'projects/users_view.html'
     context_object_name = "users"
-    paginate_by = 5
+    paginate_by = 6
     paginate_orphans = 0
 
     def has_permission(self):
