@@ -10,9 +10,11 @@
         <li class="nav-item">
             <a class="nav-link" href="{% url "webapp:IndexIssueView" %}">Посмотреть все задачи</a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{% url "webapp:ViewUsers" %}">Посмотреть всех пользователей</a>
-        </li>
+        {% if perms.webapp.view_users %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url "webapp:ViewUsers" %}">Посмотреть всех пользователей</a>
+            </li>
+        {% endif %}
     {% endif %}
 {% endblock %}
 {% block content %}

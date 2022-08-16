@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.models import User
-from django.core.paginator import Paginator
 from django.shortcuts import redirect
 # Create your views here.
 from django.urls import reverse_lazy
@@ -47,7 +46,7 @@ class ViewUsers(ListView):
     paginate_orphans = 0
 
     def has_permission(self):
-        return self.request.user.has_perm("webapp.update_project") or \
+        return self.request.user.has_perm("webapp.view_users") or \
                self.request.user.groups.filter(name__in=("Project Manager", "Team Lead")).exists()
 
 
