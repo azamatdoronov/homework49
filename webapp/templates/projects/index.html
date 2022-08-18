@@ -2,7 +2,7 @@
 {% load static %}
 {% block nav %}
     {% if request.user.is_authenticated %}
-        {% if perms.webapp.update_project and user in project.users.all %}
+        {% if perms.webapp.create_project %}
             <li class="nav-item">
                 <a class="nav-link" href="{% url "webapp:CreateProject" %}">Создать проект</a>
             </li>
@@ -10,12 +10,13 @@
         <li class="nav-item">
             <a class="nav-link" href="{% url "webapp:IndexIssueView" %}">Посмотреть все задачи</a>
         </li>
-        {% if perms.webapp.view_users %}
-            <li class="nav-item">
-                <a class="nav-link" href="{% url "webapp:ViewUsers" %}">Посмотреть всех пользователей</a>
-            </li>
         {% endif %}
+    {% if perms.webapp.users_view %}
+        <li class="nav-item">
+            <a class="nav-link" href="{% url "webapp:ViewUsers" %}">Посмотреть всех пользователей</a>
+        </li>
     {% endif %}
+
 {% endblock %}
 {% block content %}
     <br>

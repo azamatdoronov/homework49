@@ -58,7 +58,6 @@ class IssueView(DetailView):
 class CreateIssue(PermissionRequiredMixin, CreateView):
     form_class = IssueForm
     template_name = "issues/create.html"
-    permission_required = "webapp.update_issue"
 
     def form_valid(self, form):
         project = get_object_or_404(Project, pk=self.kwargs.get("pk"))
@@ -69,8 +68,8 @@ class CreateIssue(PermissionRequiredMixin, CreateView):
         return reverse("webapp:ProjectView", kwargs={"pk": self.object.project.pk})
 
     def has_permission(self):
-        return self.request.user.has_perm("webapp.update_issue") or \
-               self.request.user.groups.filter(name__in=("Project Manager", "Team Lead", "Developer")).exists()
+        return self.request.user.has_perm("webapp.create_issue") or \
+               self.request.user == self.get_object().users
 
 
 class UpdateIssue(PermissionRequiredMixin, UpdateView):
@@ -85,7 +84,7 @@ class UpdateIssue(PermissionRequiredMixin, UpdateView):
 
     def has_permission(self):
         return self.request.user.has_perm("webapp.update_issue") or \
-               self.request.user.groups.filter(name__in=("Project Manager", "Team Lead", "Developer")).exists()
+               self.request.user == self.get_object().users
 
 
 class DeleteIssue(PermissionRequiredMixin, DeleteView):
@@ -96,5 +95,5 @@ class DeleteIssue(PermissionRequiredMixin, DeleteView):
     permission_required = "webapp.update_issue"
 
     def has_permission(self):
-        return self.request.user.has_perm("webapp.update_project") or \
-               self.request.user.groups.filter(name__in=("Project Manager", "Team Lead")).exists()
+        return self.request.user.has_perm("webapp.delete_issue") or \
+               self.request.user == self.get_object().users

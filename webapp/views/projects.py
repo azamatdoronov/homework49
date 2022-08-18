@@ -37,6 +37,10 @@ class AddUsers(UpdateView):
     form_class = AddUsersForm
     template_name = 'add_users_view.html'
 
+    def has_permission(self):
+        return self.request.user.has_perm("webapp.add_user") or \
+               self.request.user == self.get_object().users
+
 
 class ViewUsers(ListView):
     model = get_user_model()
@@ -46,14 +50,13 @@ class ViewUsers(ListView):
     paginate_orphans = 0
 
     def has_permission(self):
-        return self.request.user.has_perm("webapp.view_users") or \
-               self.request.user.groups.filter(name__in=("Project Manager", "Team Lead")).exists()
+        return self.request.user.has_perm("webapp.users_view") or \
+               self.request.user == self.get_object().users
 
 
 class CreateProject(PermissionRequiredMixin, CreateView):
     form_class = ProjectForm
     template_name = "projects/create.html"
-    permission_required = "webapp.update_project"
 
     def form_valid(self, form):
         project = form.save(commit=False)
@@ -61,8 +64,8 @@ class CreateProject(PermissionRequiredMixin, CreateView):
         return redirect("webapp:ProjectView", pk=project.pk)
 
     def has_permission(self):
-        return self.request.user.has_perm("webapp.update_project") or \
-               self.request.user.groups.filter(name__in=("Project Manager", "Team Lead")).exists()
+        return self.request.user.has_perm("webapp.create_project") or \
+               self.request.user == self.get_object().users
 
     # def dispatch(self, request, *args, **kwargs):
     #     if request.user.is_authenticated:
@@ -78,7 +81,7 @@ class UpdateProject(PermissionRequiredMixin, UpdateView):
 
     def has_permission(self):
         return self.request.user.has_perm("webapp.update_project") or \
-               self.request.user.groups.filter(name__in=("Project Manager", "Team Lead")).exists()
+               self.request.user == self.get_object().users
 
 
 class DeleteProject(PermissionRequiredMixin, DeleteView):
@@ -86,12 +89,8 @@ class DeleteProject(PermissionRequiredMixin, DeleteView):
     template_name = "projects/delete.html"
     success_url = reverse_lazy("webapp:index")
 
-    def has_permission(self):
-        return self.request.user.has_perm("webapp.update_project") or \
-               self.request.user.groups.filter(name__in=("Project Manager", "Team Lead")).exists()
-
-        # return self.request.user.is_superuser or \
-        #        self.request.user.groups.filter(name__in=("Модераторы",)).exists()
+    # return self.request.user.is_superuser or \
+    #        self.request.user.groups.filter(name__in=("Модераторы",)).exists()
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(data=request.POST, instance=self.get_object())
@@ -99,3 +98,7 @@ class DeleteProject(PermissionRequiredMixin, DeleteView):
             return self.delete(request, *args, **kwargs)
         else:
             return self.get(request, *args, **kwargs)
+
+    def has_permission(self):
+        return self.request.user.has_perm("webapp.remove_project") or \
+               self.request.user == self.get_object().users

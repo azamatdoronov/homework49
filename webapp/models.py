@@ -83,5 +83,6 @@ class Project(models.Model):
             ('delete_issue', 'Удалить задачу'),
             ('update_issue', 'Редактировать задачу'),
             ('add_user', 'Добавить пользователя'),
-            ('delete_user', 'Удалить пользователя')
+            ('delete_user', 'Удалить пользователя'),
+            ('users_view', 'Просмотр пользователей')
         ]

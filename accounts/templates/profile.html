@@ -4,33 +4,39 @@
 {% block title %}Профиль{% endblock %}
 {% block nav %}
     {% if request.user.is_authenticated %}
-        {#    <li class="nav-item">#}
-        {#        <a class="nav-link" href="#">Редактировать</a>#}
-        {#    </li>#}
-        {#    <li class="nav-item">#}
-        {#        <a class="nav-link" href="#">Сменить пароль</a>#}
-        {#    </li>#}
-        {% if perms.webapp.view_users %}
+        {% if user_obj == user %}
             <li class="nav-item">
-                <a class="nav-link" href="{% url "webapp:ViewUsers" %}">Посмотреть всех пользователей</a>
+                <a class="nav-link" href="{% url "accounts:change_profile" %}">Редактировать профиль</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url "accounts:change_password" %}">Сменить пароль</a>
+            </li>
+            {% if perms.webapp.view_users %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url "webapp:ViewUsers" %}">Посмотреть всех пользователей</a>
+                </li>
+            {% endif %}
         {% endif %}
     {% endif %}
 {% endblock %}
 {% block content %}
     <div class="card flex-row mt-3">
-        {% if user.profile.avatar %}
-            <img src="{{ user.profile.avatar.url }}" class="card-img-top w-25" alt="...">
+        {% if user_obj.profile.avatar %}
+            <img src="{{ user_obj.profile.avatar.url }}" class="card-img-top w-25" alt="...">
         {% endif %}
         <div class="card-body ms-5">
-            <h5 class="card-title">Имя пользователя: {{ user.username }}</h5>
-            <h6 class="card-subtitle mb-2 text-muted">Имя: {{ user.first_name }}</h6>
-            <h6 class="card-subtitle mb-2 text-muted">Фамилия: {{ user.last_name }}</h6>
-            <h6 class="card-subtitle mb-2 text-muted">Почта: {{ user.email }}</h6>
-            <h6 class="card-subtitle mb-2 text-muted">О себе: {{ user.about_me }}</h6>
-            <h6 class="card-subtitle mb-2 text-muted">Профиль на GitHub: <a class="nav-link"
-                                                                            href="{{ user.giturl }}">Перейти по
-                ссылке</a></h6>
+            <h5 class="card-title">Имя пользователя: {{ user_obj.username }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Имя: {{ user_obj.first_name }}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Фамилия: {{ user_obj.last_name }}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Почта: {{ user_obj.email }}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">О себе: {{ user_obj.about_me }}</h6>
+            {% if user_obj.profile.gitprofile %}
+                <h6 class="card-subtitle mb-2 text-muted">Профиль в Git: <a class="nav-link"
+                                                                            href="{{ user_obj.gitprofile }}">Перейти на GIT</a></h6>
+            {% else %}
+                <h6 class="card-subtitle mb-2 text-muted">Ссылка на GIT отсутствует</h6>
+            {% endif %}
+
         </div>
     </div>
     {% include "partial/projects_list_partial.html" %}

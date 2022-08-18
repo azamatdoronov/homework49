@@ -1,25 +1,35 @@
 {% extends "base.html" %}
 {% block nav %}
+
     {% if request.user.is_authenticated %}
-    {% if perms.webapp.update_project and user in project.users.all %}
-        <li class="nav-item">
-            <a class="nav-link" href="{% url "webapp:CreateProject" %}">Создать проект</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{% url "webapp:UpdateProject" project.pk %}">Редактировать проект</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{% url "webapp:DeleteProject" project.pk %}">Удалить проект</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{% url "webapp:CreateIssue" project.pk %}">Создать задачу</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{% url "webapp:project_add_users" project.pk %}">Добавить или Удалить
-                пользователя</a>
-        </li>
+        {% if perms.webapp.create_project %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url "webapp:CreateProject" %}">Создать проект</a>
+            </li>
+        {% endif %}
+        {% if perms.webapp.update_project %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url "webapp:UpdateProject" project.pk %}">Редактировать проект</a>
+            </li>
+        {% endif %}
+        {% if perms.webapp.remove_project %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url "webapp:DeleteProject" project.pk %}">Удалить проект</a>
+            </li>
+        {% endif %}
+        {% if perms.webapp.create_issue and user in project.users.all %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url "webapp:CreateIssue" project.pk %}">Создать задачу</a>
+            </li>
+        {% endif %}
+        {% if perms.webapp.add_user and user in project.users.all %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url "webapp:project_add_users" project.pk %}">Добавить или Удалить
+                    пользователя</a>
+            </li>
         {% endif %}
     {% endif %}
+
 {% endblock %}
 {% block content %}
     <h1>Подробная информация <br>
@@ -51,7 +61,7 @@
     <br>
     {% for user in project.users.all %}
         <div class="col my-2">
-        <a class="card-title" href="{% url "accounts:profile" user.pk %}">{{ user.username }}</a>
+            <a class="card-title" href="{% url "accounts:profile" user.pk %}">{{ user.username }}</a>
         </div>
     {% empty %}
         <p>Пользователей нет</p>
